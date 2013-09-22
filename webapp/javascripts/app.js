@@ -273,7 +273,7 @@
             $.each(item, function(key, val) {
               //console.log(key, val);
               if (key !== 'Nr') {
-                if (val === '' || typeof val === 'undefined' || isNaN(val)) {
+                if (val === '' || typeof val === 'undefined') {
                   val = 0;
                 } else if (val.indexOf(',') !== -1) {
                   val = parseFloat(val.replace(',', '.'));
@@ -340,6 +340,7 @@
         processed = true;
       }
     });
+    //console.log(result);
     renderData(stimmbezirke, result, 'X', 'Y');
   });
   

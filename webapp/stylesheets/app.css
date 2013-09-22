@@ -48,6 +48,10 @@ body { font: 12px sans-serif; }
 .tipsy-w .tipsy-arrow { top: 50%; margin-top: -4px; left: 0; width: 5px; height: 9px; }
 
 
+#tooltip {
+	min-height: 200px;
+}
+
 
 /* -----------------------------------------
    Page Name 1

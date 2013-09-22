@@ -229,7 +229,7 @@
     ];
     
     this.loadData = function(callback) {
-      d3.csv('/data/struktur_stimmbezirk.csv', function(d){
+      d3.csv('data/struktur_stimmbezirk.csv', function(d){
         $.each(d, function(i, item){
           structureData[item['StimmbezirkNr']] = {};
           $.each(item, function(key, val) {
@@ -247,9 +247,9 @@
           });
         });
         // now load 2013 result data
-        var url = '/data/result_stadtteil.csv';
+        var url = 'data/result_stadtteil.csv';
         if (resultType == 'stimmbezirk') {
-          url = '/data/result_stimmbezirk.csv';
+          url = 'data/result_stimmbezirk.csv';
         }
         var dsv = d3.dsv(';', 'text/plain');
         var headersParsed = false;

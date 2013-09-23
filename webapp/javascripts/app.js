@@ -192,9 +192,16 @@
       attribution: 'Geodaten &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> Mitwirkende',
       maxZoom: 17
     }).addTo(map);
-    $.getJSON('data/geojson/' + areaId + '.geojson', function(feature){
-      var shape = L.geoJson(feature).addTo(map);
-      map.fitBounds(shape.getBounds());
+    var url = 'data/geojson/' + areaId + '.geojson';
+    $.ajax({
+      dataType: "json",
+      url: url,
+      cache: true,
+      data: {},
+      success: function(feature){
+        var shape = L.geoJson(feature).addTo(map);
+        map.fitBounds(shape.getBounds());
+      }
     });
   };
 

@@ -193,7 +193,8 @@
       maxZoom: 15
     }).addTo(map);
     $.getJSON('data/geojson/' + areaId + '.geojson', function(feature){
-      L.geoJson(feature).addTo(map);
+      var shape = L.geoJson(feature).addTo(map);
+      map.fitBounds(shape.getBounds());
     });
   };
 

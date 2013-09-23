@@ -44,24 +44,37 @@
   </form>
 
   <div class="row">
-    <div class="twelve columns">
-      <div id="chart"></div>
+    <div class="large-9 columns" id="chart"></div>
+    <div class="large-3 columns">
+      <div id="tooltip" style="max-width: 300px"></div>
     </div>
   </div>
 
   <div class="row">
     <div class="twelve columns">
-      <div id="tooltip"></div>
+      <p>Diese Anwendung ist entstanden bei der Veranstaltung <a href="http://wahldatenhelfer.de/" target="_blank">Wahl.Daten.Helfer</a>. Die Daten stammen von der Stadt Köln und sind teils als offene Daten unter <a target="_blank" href="http://www.offenedaten-koeln.de/">offenedaten-koeln.de/</a> verfügbar. Der Scatterplot-Code basiert auf dem Beispiel <a href="http://bl.ocks.org/nsonnad/4481531" target="_blank">bl.ocks.org/nsonnad/4481531</a>. Realisiert durch: <a href="http://www.sendung.de/" target="_blank">Marian Steinbach</a></p>
     </div>
   </div>
 
   <div class="row">
     <div class="twelve columns">
-      <h5>Über diese Anwendung</h5>
-      <p>Diese Anwendung ist entstanden bei der Veranstaltung <a href="http://wahldatenhelfer.de/" target="_blank">Wahl.Daten.Helfer</a>. Die Daten stammen von der Stadt Köln und sind teils als offene Daten unter <a target="_blank" href="http://www.offenedaten-koeln.de/">offenedaten-koeln.de/</a>verfügbar. Der Scatterplot-Code basiert auf dem Beispiel <a href="http://bl.ocks.org/nsonnad/4481531" target="_blank">bl.ocks.org/nsonnad/4481531</a></p>
-
-      <p>Realisiert durch: <a href="http://www.sendung.de/" target="_blank">Marian Steinbach</a></p>
-
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+          /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+          var disqus_shortname = 'wahlanalyse'; // required: replace example with your forum shortname
+          var disqus_config = function () { 
+            this.language = "de";
+          };
+          /* * * DON'T EDIT BELOW THIS LINE * * */
+          (function() {
+              var dsq = document.createElement('script');
+              dsq.type = 'text/javascript';
+              dsq.async = true;
+              dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+              (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+      </script>
+      <noscript>Um die Kommentarfunktion nutzen zu können, musst Du JavaScript aktivieren.</noscript>
     </div>
   </div>
 
@@ -69,7 +82,6 @@
 
   <script src="javascripts/d3.v3.min.js" type="text/javascript"></script>
   <script src="javascripts/jquery.js"></script>
-  <script src="javascripts/jquery.tipsy.js" type="text/javascript" charset="utf-8"></script>
   <script src="javascripts/foundation.min.js"></script>
   <script src="javascripts/app.js"></script>
 
@@ -85,6 +97,5 @@
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
   })();
   </script>
-  
 </body>
 </html>

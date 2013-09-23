@@ -8,8 +8,12 @@
   var result;
   var stimmbezirke;
   var svg;
+  var metricLabels = {};
+  var xOption, yOption;
+
 
   $(document).ready(function() {
+
     $.fn.foundationAlerts           ? $doc.foundationAlerts() : null;
     $.fn.foundationButtons          ? $doc.foundationButtons() : null;
     $.fn.foundationAccordion        ? $doc.foundationAccordion() : null;
@@ -28,7 +32,9 @@
       var el = $(this);
       var id = el.attr('id');
       var val = el.val();
-      renderData(stimmbezirke, result, $('#x').val(), $('#y').val());
+      xOption = $('#x').val();
+      yOption = $('#y').val();
+      renderData(stimmbezirke, result);
     });
   });
 
@@ -43,13 +49,14 @@
 
   // set the stage
   var margin = {t:30, r:20, b:20, l:40 };
-  var w = $('#chart').width() - margin.l - margin.r;
-  var h = 600 - margin.t - margin.b;
+  var w = 500 - margin.l - margin.r;
+  var h = 540 - margin.t - margin.b;
   var x = d3.scale.linear().range([0, w]);
   var y = d3.scale.linear().range([h - 60, 0]);
   //colors that will reflect geographical regions
-  var color = d3.scale.category10();
-  var radius = 4;
+  //var color = d3.scale.category10();
+  var radius = 3;
+  var dotAlpha = 0.3;
 
 
   // set axes, as well as details on their ticks
@@ -68,6 +75,27 @@
     .orient("left");
 
 
+  // what happens when we leave a bubble?
+  var mouseOff = function() {
+    var circle = d3.select(this);
+
+    // go back to original size and opacity
+    circle.transition()
+    .duration(800).style("opacity", dotAlpha)
+    .attr("r", radius).ease("elastic");
+
+    // fade out guide lines, then remove them
+    //d3.selectAll(".guide")
+    //  .transition()
+    //  .duration(100)
+    //  .styleTween(
+    //    "opacity",
+    //    function() { return d3.interpolate(0.5, 0); }
+    //  )
+    //  .remove();
+    $('#tooltip').empty();
+  };
+
   // what to do when we mouse over a bubble
   var mouseOn = function() {
     var circle = d3.select(this);
@@ -77,8 +105,9 @@
     .attr("r", radius + 5).ease("elastic");
 
     var currentAreaId = $(circle[0]).attr('id');
-    var tooltipHtml = '<h4>Stimmbezirk ' + currentAreaId + '</h4>';
-    tooltipHtml += '<p>Stadtbezirk '+ result[currentAreaId].StadtbezirkName +', Stadtteil '+ result[currentAreaId].StadtteilName +'</p>';
+    var tooltipHtml = '<p><b>Stadtbezirk '+ result[currentAreaId].StadtbezirkName +', Stadtteil '+ result[currentAreaId].StadtteilName +', Stimmbezirk ' + currentAreaId + '</b></p>';
+    tooltipHtml += '<p>'+ metricLabels[xOption]+': <b>'+ result[currentAreaId][xOption] +'</b><br>';
+    tooltipHtml += metricLabels[yOption]+': <b>'+ result[currentAreaId][yOption] +'</b></p>';
     $('#tooltip').append(tooltipHtml);
 
     // append lines to bubbles that will be used to show the precise data points.
@@ -117,29 +146,8 @@
 
   };
 
-  // what happens when we leave a bubble?
-  var mouseOff = function() {
-    var circle = d3.select(this);
-
-    // go back to original size and opacity
-    circle.transition()
-    .duration(800).style("opacity", 0.5)
-    .attr("r", radius).ease("elastic");
-
-    // fade out guide lines, then remove them
-    //d3.selectAll(".guide")
-    //  .transition()
-    //  .duration(100)
-    //  .styleTween(
-    //    "opacity",
-    //    function() { return d3.interpolate(0.5, 0); }
-    //  )
-    //  .remove();
-    $('#tooltip').empty();
-  };
-
   // bring in the data, and do everything that is data-driven
-  var renderData = function(areas, results, xOption, yOption) {
+  var renderData = function(areas, results) {
     $('#chart').empty();
     svg = d3.select("#chart").append("svg")
       .attr("width", w + margin.l + margin.r)
@@ -164,9 +172,10 @@
         cx: function(d) { return x(results[d][xOption]); },
         cy: function(d) { return y(results[d][yOption]); },
         r: radius,
-        id: function(d) { return d; }
+        id: function(d) { return d; },
+        opacity: dotAlpha
       })
-      .style('fill', '#f13e00');
+      .style('fill', '#0e6399');
 
     
     // run the mouseon/out functions
@@ -190,7 +199,7 @@
       .attr("text-anchor", "end")
       .attr("x", w + 50)
       .attr("y", h - margin.t - 5)
-      .text(yOption);
+      .text(xOption);
 
     svg.append("text")
       .attr("class", "y label")
@@ -199,7 +208,7 @@
       .attr("y", 45)
       .attr("dy", ".75em")
       .attr("transform", "rotate(-90)")
-      .text(xOption);
+      .text(yOption);
   };
 
   
@@ -274,7 +283,7 @@
               //console.log(key, val);
               if (key !== 'Nr') {
                 if (val === '' || typeof val === 'undefined') {
-                  val = 0;
+                  val = undefined;
                 } else if (val.indexOf(',') !== -1) {
                   val = parseFloat(val.replace(',', '.'));
                 } else {
@@ -322,26 +331,65 @@
   result_stimmbezirk.loadData(function(){
     stimmbezirke = result_stimmbezirk.getAreas();
     result = result_stimmbezirk.getCombinedResults();
-    // fill selection
+
+    // fill selection and create labels
     $('select.selection').empty();
     var processed = false;
     $.each(result, function(stimmbezirkId, item){
       if (!processed) {
-        var labels = [];
+        var metrics = [];
         $.each(item, function(key, val){
-          labels.push(key);
+          // add label
+          if (key.indexOf('Z_') === 0) {
+            if (key.indexOf('_Proz') !== -1) {
+              metricLabels[key] = 'Parteien > 2013 > Anteil Zweitstimmen > ' + key.substr(2, key.length - 7);
+            }
+          } else if (key.indexOf('_Proz') !== -1) {
+            metricLabels[key] = 'Parteien > 2013 > Anteil Erststimmen > ' + key.substr(0, key.length - 5);
+          }
+          metrics.push(key);
         });
-        labels.sort();
-        $.each(labels, function(i, label){
-          $('select.selection').append('<option value="'+ label +'">'+ label +'</option>');
+        metricLabels['Wahlbeteiligung'] = 'Allgemein > 2013 > Wahlbeteiligung';
+        metricLabels['gültigeStimmzettel'] = '';
+        metricLabels['X'] = 'Allgemein > Position > Längengrad';
+        metricLabels['Y'] = 'Allgemein > Position > Breitengrad';
+        metricLabels['AnteilAusländer'] = 'Allgemein > Ausländeranteil';
+        metricLabels['AnteilFrauen'] = 'Allgemein > Frauenanteil';
+        metricLabels['AnteilWahlberechtigte'] = 'Allgemein > Anteil Wahlberechtigte';
+        metricLabels['Anteil18bis24Jahre'] = 'Allgemein > 2013 > Anteil Wahlberechtige von 18 bis 24 Jahre';
+        metricLabels['Anteil25bis34Jahre'] = 'Allgemein > 2013 > Anteil Wahlberechtige von 25 bis 34 Jahre';
+        metricLabels['Anteil35bis44Jahre'] = 'Allgemein > 2013 > Anteil Wahlberechtige von 35 bis 44 Jahre';
+        metricLabels['Anteil45bis59Jahre'] = 'Allgemein > 2013 > Anteil Wahlberechtige von 45 bis 59 Jahre';
+        metricLabels['gültig'] = 'Allgemein > 2013 > Gültige Erststimmen';
+        metricLabels['AnteilAb60Jahre'] = 'Allgemein > 2013 > Anteil Wahlberechtige ab 60 Jahre';
+        metricLabels['ErststimmenAnteil_Sonstige_2009'] = 'Parteien > 2009 > Anteil Erststimmen > Sonstige';
+        metricLabels['ErststimmenAnteil_Sonstige_2009'] = 'Parteien > 2009 > Anteil Erststimmen > Sonstige';
+        metricLabels['ErststimmenAnteil_Sonstige_2009'] = 'Parteien > 2009 > Anteil Erststimmen > Sonstige';
+        metricLabels['ErststimmenAnteil_Sonstige_2009'] = 'Parteien > 2009 > Anteil Erststimmen > Sonstige';
+        metricLabels['ErststimmenAnteil_Sonstige_2009'] = 'Parteien > 2009 > Anteil Erststimmen > Sonstige';
+        metricLabels['ErststimmenAnteil_Sonstige_2009'] = 'Parteien > 2009 > Anteil Erststimmen > Sonstige';
+        metricLabels['ErststimmenAnteil_Sonstige_2009'] = 'Parteien > 2009 > Anteil Erststimmen > Sonstige';
+        metricLabels['ErststimmenAnteil_Sonstige_2009'] = 'Parteien > 2009 > Anteil Erststimmen > Sonstige';
+        metricLabels['ErststimmenAnteil_Sonstige_2009'] = 'Parteien > 2009 > Anteil Erststimmen > Sonstige';
+        metricLabels['ErststimmenAnteil_Sonstige_2009'] = 'Parteien > 2009 > Anteil Erststimmen > Sonstige';
+        metrics.sort();
+        $.each(metrics, function(i, metric){
+          if (metricLabels[metric]) {
+            $('select.selection').append('<option value="'+ metric +'">'+ metricLabels[metric] +'</option>');
+          }
         });
         $('#x').val('X');
         $('#y').val('Y');
         processed = true;
+        //console.log(metricLabels);
       }
     });
-    //console.log(result);
-    renderData(stimmbezirke, result, 'X', 'Y');
+
+
+    // render initial graph
+    xOption = 'X';
+    yOption = 'Y';
+    renderData(stimmbezirke, result);
   });
   
 

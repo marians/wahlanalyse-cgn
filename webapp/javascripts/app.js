@@ -190,7 +190,7 @@
     var map = L.map('map').setView([result[areaId].Y, result[areaId].X], 13);
     L.tileLayer('http://{s}.ok.mycdn.de/tiles/v3/{z}/{x}/{y}.png', {
       attribution: 'Geodaten &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> Mitwirkende',
-      maxZoom: 15
+      maxZoom: 17
     }).addTo(map);
     $.getJSON('data/geojson/' + areaId + '.geojson', function(feature){
       var shape = L.geoJson(feature).addTo(map);

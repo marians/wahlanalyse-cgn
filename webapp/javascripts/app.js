@@ -186,7 +186,7 @@
    * centered on lon, lat
    */
   var showMap = function(selection, areaId){
-    $(selection).append('<div id="map" style="height: 200px"></div>');
+    $(selection).append('<div id="map" style="height: 250px"></div>');
     var map = L.map('map').setView([result[areaId].Y, result[areaId].X], 13);
     L.tileLayer('http://{s}.ok.mycdn.de/tiles/v3/{z}/{x}/{y}.png', {
       attribution: 'Geodaten &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> Mitwirkende',

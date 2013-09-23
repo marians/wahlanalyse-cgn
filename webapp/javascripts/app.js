@@ -76,65 +76,34 @@
 
 
   // what happens when we leave a bubble?
-  var mouseOff = function() {
-    var circle = d3.select(this);
-
-    // go back to original size and opacity
-    circle.transition()
-    .duration(800).style("opacity", dotAlpha)
-    .attr("r", radius).ease("elastic");
-
-    // fade out guide lines, then remove them
-    //d3.selectAll(".guide")
-    //  .transition()
-    //  .duration(100)
-    //  .styleTween(
-    //    "opacity",
-    //    function() { return d3.interpolate(0.5, 0); }
-    //  )
-    //  .remove();
+  var resetCircleHighlights = function() {
     $('#tooltip').empty();
+    d3.select('circle.highlight')
+      .classed('highlight', false)
+      .transition()
+      .duration(800)
+      .style("opacity", dotAlpha)
+      .attr("r", radius)
+      .ease("elastic");
   };
 
   // what to do when we mouse over a bubble
   var mouseOn = function() {
+    resetCircleHighlights();
     var circle = d3.select(this);
     // transition to increase size/opacity of bubble
-    circle.transition()
-    .duration(800).style("opacity", 1)
-    .attr("r", radius + 5).ease("elastic");
+    circle.classed('highlight', true)
+      .transition()
+      .duration(800)
+      .style("opacity", 1)
+      .attr("r", radius + 5)
+      .ease("elastic");
 
     var currentAreaId = $(circle[0]).attr('id');
     var tooltipHtml = '<p><b>Stadtbezirk '+ result[currentAreaId].StadtbezirkName +', Stadtteil '+ result[currentAreaId].StadtteilName +', Stimmbezirk ' + currentAreaId + '</b></p>';
     tooltipHtml += '<p>'+ metricLabels[xOption]+': <b>'+ result[currentAreaId][xOption] +'</b><br>';
     tooltipHtml += metricLabels[yOption]+': <b>'+ result[currentAreaId][yOption] +'</b></p>';
     $('#tooltip').append(tooltipHtml);
-
-    // append lines to bubbles that will be used to show the precise data points.
-    // translate their location based on margins
-    //svg.append("g")
-    //    .attr("class", "guide")
-    //.append("line")
-    //    .attr("x1", circle.attr("cx"))
-    //    .attr("x2", circle.attr("cx"))
-    //    .attr("y1", +circle.attr("cy") + 26)
-    //    .attr("y2", h - margin.t - margin.b)
-    //    .attr("transform", "translate(40,20)")
-    //    .style("stroke", circle.style("fill"))
-    //    .transition().delay(200).duration(400).styleTween("opacity",
-    //                function() { return d3.interpolate(0, 0.5); });
-//
-    //svg.append("g")
-    //    .attr("class", "guide")
-    //.append("line")
-    //    .attr("x1", +circle.attr("cx") - 16)
-    //    .attr("x2", 0)
-    //    .attr("y1", circle.attr("cy"))
-    //    .attr("y2", circle.attr("cy"))
-    //    .attr("transform", "translate(40,30)")
-    //    .style("stroke", circle.style("fill"))
-    //    .transition().delay(200).duration(400).styleTween("opacity",
-    //                function() { return d3.interpolate(0, 0.5); });
 
     // function to move mouseover item to front of SVG stage, in case
     // another bubble overlaps it
@@ -180,7 +149,7 @@
     
     // run the mouseon/out functions
     circles.on("mouseover", mouseOn);
-    circles.on("mouseout", mouseOff);
+    //circles.on("mouseout", mouseOff);
 
     // render raw graph background
 

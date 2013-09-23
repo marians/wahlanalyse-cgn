@@ -322,62 +322,68 @@
     // fill selection and create labels
     $('select.selection').empty();
     var processed = false;
-    $.each(result, function(stimmbezirkId, item){
-      if (!processed) {
-        var metrics = [];
-        $.each(item, function(key, val){
-          // add label
-          if (key.indexOf('Z_') === 0) {
-            if (key.indexOf('_Proz') !== -1) {
-              metricLabels[key] = 'Parteien > 2013 > Anteil Zweitstimmen > ' + key.substr(2, key.length - 7);
-            }
-          } else if (key.indexOf('_Proz') !== -1) {
-            metricLabels[key] = 'Parteien > 2013 > Anteil Erststimmen > ' + key.substr(0, key.length - 5);
-          }
-          metrics.push(key);
-        });
-        metricLabels['Wahlbeteiligung'] = 'Allgemein > 2013 > Wahlbeteiligung';
-        metricLabels['gültigeStimmzettel'] = '';
-        metricLabels['X'] = 'Allgemein > Position > Längengrad';
-        metricLabels['Y'] = 'Allgemein > Position > Breitengrad';
-        metricLabels['AnteilAusländer'] = 'Allgemein > Ausländeranteil';
-        metricLabels['AnteilFrauen'] = 'Allgemein > Frauenanteil';
-        metricLabels['AnteilWahlberechtigte'] = 'Allgemein > Anteil Wahlberechtigte';
-        metricLabels['Anteil18bis24Jahre'] = 'Allgemein > 2013 > Anteil Wahlberechtige von 18 bis 24 Jahre';
-        metricLabels['Anteil25bis34Jahre'] = 'Allgemein > 2013 > Anteil Wahlberechtige von 25 bis 34 Jahre';
-        metricLabels['Anteil35bis44Jahre'] = 'Allgemein > 2013 > Anteil Wahlberechtige von 35 bis 44 Jahre';
-        metricLabels['Anteil45bis59Jahre'] = 'Allgemein > 2013 > Anteil Wahlberechtige von 45 bis 59 Jahre';
-        metricLabels['gültig'] = 'Allgemein > 2013 > Gültige Erststimmen';
-        metricLabels['AnteilAb60Jahre'] = 'Allgemein > 2013 > Anteil Wahlberechtige ab 60 Jahre';
-        metricLabels['ErststimmenAnteil_Sonstige_2009'] = 'Parteien > 2009 > Anteil Erststimmen > Sonstige';
-        metricLabels['ErststimmenAnteil_Sonstige_2009'] = 'Parteien > 2009 > Anteil Erststimmen > Sonstige';
-        metricLabels['ErststimmenAnteil_Sonstige_2009'] = 'Parteien > 2009 > Anteil Erststimmen > Sonstige';
-        metricLabels['ErststimmenAnteil_Sonstige_2009'] = 'Parteien > 2009 > Anteil Erststimmen > Sonstige';
-        metricLabels['ErststimmenAnteil_Sonstige_2009'] = 'Parteien > 2009 > Anteil Erststimmen > Sonstige';
-        metricLabels['ErststimmenAnteil_Sonstige_2009'] = 'Parteien > 2009 > Anteil Erststimmen > Sonstige';
-        metricLabels['ErststimmenAnteil_Sonstige_2009'] = 'Parteien > 2009 > Anteil Erststimmen > Sonstige';
-        metricLabels['ErststimmenAnteil_Sonstige_2009'] = 'Parteien > 2009 > Anteil Erststimmen > Sonstige';
-        metricLabels['ErststimmenAnteil_Sonstige_2009'] = 'Parteien > 2009 > Anteil Erststimmen > Sonstige';
-        metricLabels['ErststimmenAnteil_Sonstige_2009'] = 'Parteien > 2009 > Anteil Erststimmen > Sonstige';
-        metrics.sort();
-        $.each(metrics, function(i, metric){
-          if (metricLabels[metric]) {
-            $('select.selection').append('<option value="'+ metric +'">'+ metricLabels[metric] +'</option>');
-          }
-        });
-        $('#x').val('X');
-        $('#y').val('Y');
-        processed = true;
-        //console.log(metricLabels);
+    var metrics = [];
+    $.each(result[stimmbezirke[0]], function(key, val){
+      // add label
+      if (key.indexOf('Z_') === 0) {
+        if (key.indexOf('_Proz') !== -1) {
+          metricLabels[key] = 'Bundestagswahl 2013 > Anteil Zweitstimmen > ' + key.substr(2, key.length - 7);
+        }
+      } else if (key.indexOf('_Proz') !== -1) {
+        metricLabels[key] = 'Bundestagswahl 2013 > Anteil Erststimmen > ' + key.substr(0, key.length - 5);
+      }
+      metrics.push(key);
+    });
+    metricLabels['Wahlbeteiligung'] = 'Bundestagswahl 2013 > Wahlbeteiligung';
+    metricLabels['Wahlbeteiligung2009'] = 'Bundestagswahl 2009 > Wahlbeteiligung';
+    metricLabels['X'] = 'Allgemein > Position > Längengrad';
+    metricLabels['Y'] = 'Allgemein > Position > Breitengrad';
+    metricLabels['AnteilAusländer'] = 'Allgemein > Ausländeranteil';
+    metricLabels['AnteilFrauen'] = 'Allgemein > Frauenanteil';
+    metricLabels['AnteilWahlberechtigte'] = 'Allgemein > Anteil Wahlberechtigte';
+    metricLabels['Anteil18bis24Jahre'] = 'Allgemein > Anteil Wahlberechtige von 18 bis 24 Jahre';
+    metricLabels['Anteil25bis34Jahre'] = 'Allgemein > Anteil Wahlberechtige von 25 bis 34 Jahre';
+    metricLabels['Anteil35bis44Jahre'] = 'Allgemein > Anteil Wahlberechtige von 35 bis 44 Jahre';
+    metricLabels['Anteil45bis59Jahre'] = 'Allgemein > Anteil Wahlberechtige von 45 bis 59 Jahre';
+    metricLabels['AnteilAb60Jahre'] = 'Allgemein > Anteil Wahlberechtige ab 60 Jahre';
+    metricLabels['ErststimmenAnteil_Sonstige_2009'] = 'Bundestagswahl 2009 > Anteil Erststimmen > Sonstige';
+    metricLabels['ErststimmenAnteil_DIE_LINKE_2009'] = 'Bundestagswahl 2009 > Anteil Erststimmen > DIE LINKE';
+    metricLabels['ErststimmenAnteil_FDP_2009'] = 'Bundestagswahl 2009 > Anteil Erststimmen > FDP';
+    metricLabels['ErststimmenAnteil_GRUENE_2009'] = 'Bundestagswahl 2009 > Anteil Erststimmen > GRUENE';
+    metricLabels['ErststimmenAnteil_CDU_2009'] = 'Bundestagswahl 2009 > Anteil Erststimmen > CDU';
+    metricLabels['ErststimmenAnteil_SPD_2009'] = 'Bundestagswahl 2009 > Anteil Erststimmen > SPD';
+    metricLabels['ZweitstimmenAnteil_Sonstige_2009'] = 'Bundestagswahl 2009 > Anteil Zweitstimmen > Sonstige';
+    metricLabels['ZweitstimmenAnteil_DIE_LINKE_2009'] = 'Bundestagswahl 2009 > Anteil Zweitstimmen > DIE LINKE';
+    metricLabels['ZweitstimmenAnteil_FDP_2009'] = 'Bundestagswahl 2009 > Anteil Zweitstimmen > FDP';
+    metricLabels['ZweitstimmenAnteil_SPD_2009'] = 'Bundestagswahl 2009 > Anteil Zweitstimmen > SPD';
+    metricLabels['ZweitstimmenAnteil_CDU_2009'] = 'Bundestagswahl 2009 > Anteil Zweitstimmen > CDU';
+    metricLabels['ZweitstimmenAnteil_GRUENE_2009'] = 'Bundestagswahl 2009 > Anteil Zweitstimmen > GRUENE';
+
+    metrics.sort(function(a, b){
+      if (metricLabels[a] < metricLabels[b]) {
+        return 1;
+      } else if (metricLabels[a] > metricLabels[b]) {
+        return -1;
+      }
+      return 0;
+    });
+
+    $.each(metrics, function(i, metric){
+      if (metricLabels[metric]) {
+        $('select.selection').append('<option value="'+ metric +'">'+ metricLabels[metric] +'</option>');
       }
     });
 
+    // default selection
+    $('#x').val('X');
+    $('#y').val('Y');
 
     // render initial graph
     xOption = 'X';
     yOption = 'Y';
     renderData(stimmbezirke, result);
   });
+
   
 
 })(jQuery, d3, L, console, this);

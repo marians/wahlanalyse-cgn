@@ -1,4 +1,4 @@
-;(function ($, d3, console, window, undefined) {
+;(function ($, d3, L, console, window, undefined) {
   'use strict';
 
   var $doc = $(document),
@@ -104,6 +104,7 @@
     tooltipHtml += '<p>'+ metricLabels[xOption]+': <b>'+ result[currentAreaId][xOption] +'</b><br>';
     tooltipHtml += metricLabels[yOption]+': <b>'+ result[currentAreaId][yOption] +'</b></p>';
     $('#tooltip').append(tooltipHtml);
+    showMap('#tooltip', currentAreaId);
 
     // function to move mouseover item to front of SVG stage, in case
     // another bubble overlaps it
@@ -178,6 +179,22 @@
       .attr("dy", ".75em")
       .attr("transform", "rotate(-90)")
       .text(yOption);
+  };
+
+  /**
+   * Add a map to the target selection
+   * centered on lon, lat
+   */
+  var showMap = function(selection, areaId){
+    $(selection).append('<div id="map" style="height: 200px"></div>');
+    var map = L.map('map').setView([result[areaId].Y, result[areaId].X], 13);
+    L.tileLayer('http://{s}.ok.mycdn.de/tiles/v3/{z}/{x}/{y}.png', {
+      attribution: 'Geodaten &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> Mitwirkende',
+      maxZoom: 15
+    }).addTo(map);
+    $.getJSON('data/geojson/' + areaId + '.geojson', function(feature){
+      L.geoJson(feature).addTo(map);
+    });
   };
 
   
@@ -362,4 +379,4 @@
   });
   
 
-})(jQuery, d3, console, this);
+})(jQuery, d3, L, console, this);

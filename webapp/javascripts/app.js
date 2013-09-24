@@ -127,8 +127,8 @@
     var yminmax = d3.extent(areas, function(d) { return results[d][yOption]; });
 
     // set scale range
-    x.domain([xminmax[0] - (xminmax[1] - xminmax[0]) * 0.03, xminmax[1] + (xminmax[1] - xminmax[0]) * 0.03]);
-    y.domain([yminmax[0] - (yminmax[1] - yminmax[0]) * 0.03, yminmax[1] + (yminmax[1] - yminmax[0]) * 0.03]);
+    x.domain([xminmax[0] - (xminmax[1] - xminmax[0]) * 0.05, xminmax[1] + (xminmax[1] - xminmax[0]) * 0.05]);
+    y.domain([yminmax[0] - (yminmax[1] - yminmax[0]) * 0.05, yminmax[1] + (yminmax[1] - yminmax[0]) * 0.05]);
 
     // group that will contain all of the plots
     var groups = svg.append("g").attr("transform", "translate(" + margin.l + "," + margin.t + ")");

@@ -391,6 +391,4 @@
     renderData(stimmbezirke, result);
   });
 
-  
-
 })(jQuery, d3, L, console, this);
